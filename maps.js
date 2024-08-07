@@ -1,25 +1,17 @@
-import { someFunction } from 'some-file';
-
-const baz = Math.random();
-const foo = someFunction();
-const bar = baz + 1;
-
 $(document).ready(function() {
-    var test = Highcharts.maps.nicaragua.map((region, i) => {
-        return {
-            ...region,
-            drilldown: region.key,
-            value: i
-        };
-    });
+    const test = Highcharts.maps.nicaragua.map((region, i) => ({
+        ...region,
+        drilldown: region.key,
+        value: i
+    }));
 
     Highcharts.mapChart('nicaragua', {
         chart: {
             events: {
                 drilldown: function(e) {
                     if (!e.seriesOptions) {
-                        var chart = this;
-                        var mapkey = 'maps/' + e.point.drilldown;
+                        const chart = this;
+                        const mapkey = 'maps/' + e.point.drilldown;
                         $.get(mapkey + '.json')
                             .done(function(data) {
                                 data.data = data.data.map((region, i) => ({ ...region, value: i }));
