@@ -1,3 +1,9 @@
+import { someFunction } from 'some-file';
+
+const baz = Math.random();
+const foo = someFunction();
+const bar = baz + 1;
+
 $(document).ready(function() {
     var test = Highcharts.maps.nicaragua.map((region, i) => {
         return {
