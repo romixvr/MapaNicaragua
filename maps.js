@@ -1,35 +1,34 @@
-$(document).ready(function(){
-
-    var test = Highcharts.maps.nicaragua;
-    $.each(test, function(i){
-        this.drilldown = this.key;
-        this.value = i;
+$(document).ready(function() {
+    var test = Highcharts.maps.nicaragua.map((region, i) => {
+        return {
+            ...region,
+            drilldown: region.key,
+            value: i
+        };
     });
-    console.log(test);
 
     Highcharts.mapChart('nicaragua', {
         chart: {
             events: {
-                drilldown: function(e){
-                    if (!e.seriesOptions){
+                drilldown: function(e) {
+                    if (!e.seriesOptions) {
                         var chart = this;
-                        mapkey = 'maps/' + e.point.drilldown;
-                        $.get(mapkey + '.json', function(data) {
-
-                            $.each(data, function (i) {
-                                this.value = i;
+                        var mapkey = 'maps/' + e.point.drilldown;
+                        $.get(mapkey + '.json')
+                            .done(function(data) {
+                                data.data = data.data.map((region, i) => ({ ...region, value: i }));
+                                chart.addSeriesAsDrilldown(e.point, {
+                                    name: e.point.name,
+                                    data: data.data,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}'
+                                    }
+                                });
+                            })
+                            .fail(function() {
+                                alert('Error al cargar los datos. Por favor, intente nuevamente.');
                             });
-                            
-                            chart.addSeriesAsDrilldown(e.point, {
-                                name: e.point.name,
-                                data: data.data,
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '{point.name}'
-                                }
-                            });
-                            console.log(data);
-                        });
                     }
                 }
             }
@@ -37,7 +36,6 @@ $(document).ready(function(){
         title: {
             text: 'Mapa de Nicaragua'
         },
-
         subtitle: {
             text: 'NIC',
             floating: true,
@@ -47,20 +45,17 @@ $(document).ready(function(){
                 fontSize: '16px'
             }
         },
-
         colorAxis: {
             min: 0,
             minColor: '#99DAFF',
             maxColor: '#569CC4'
         },
-
         mapNavigation: {
             enabled: true,
             buttonOptions: {
                 verticalAlign: 'bottom'
             }
         },
-
         plotOptions: {
             map: {
                 states: {
@@ -93,6 +88,4 @@ $(document).ready(function(){
             }
         }
     });
-
-	
 });
