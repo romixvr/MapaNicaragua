@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(() => {
     const test = Highcharts.maps.nicaragua.map((region, i) => ({
         ...region,
         drilldown: region.key,
@@ -8,12 +8,12 @@ $(document).ready(function() {
     Highcharts.mapChart('nicaragua', {
         chart: {
             events: {
-                drilldown: function(e) {
+                drilldown: (e) => { // Arrow function
                     if (!e.seriesOptions) {
                         const chart = this;
                         const mapkey = 'maps/' + e.point.drilldown;
                         $.get(mapkey + '.json')
-                            .done(function(data) {
+                            .done((data) => { // Arrow function
                                 data.data = data.data.map((region, i) => ({ ...region, value: i }));
                                 chart.addSeriesAsDrilldown(e.point, {
                                     name: e.point.name,
@@ -24,7 +24,7 @@ $(document).ready(function() {
                                     }
                                 });
                             })
-                            .fail(function() {
+                            .fail(() => { // Arrow function
                                 alert('Error al cargar los datos. Por favor, intente nuevamente.');
                             });
                     }
